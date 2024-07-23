@@ -1,37 +1,75 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../main.dart';
-class Document extends StatefulWidget {
-  const Document({super.key});
+import '../../models/document.dart';
+import '../../services/document_service.dart';
+
+class Documents extends StatefulWidget {
+  const Documents({super.key});
 
   @override
-  State<Document> createState() => _Document();
+  State<Documents> createState() => _DocumentState();
 }
 
-class _Document extends State<Document> {
-  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey<CurvedNavigationBarState>();
+class _DocumentState extends State<Documents> {
+  final DocumentService _documentService = DocumentService();
+  List<Document> documents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDocuments();
+  }
+
+  void _loadDocuments() async {
+    List<Document> loadedDocuments = await _documentService.getDocuments();
+    setState(() {
+      documents = loadedDocuments;
+    });
+  }
+
+  void _addNewDocument() {
+    // For simplicity, adding a new document with a timestamp
+    setState(() {
+      // documents.add();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          color: Colors.deepOrangeAccent,
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                Text(pos.toString(), textScaleFactor: 10.0),
-                ElevatedButton(
-                  child: Text('Go To Page of index 1'),
-                  onPressed: () {
-                    //Page change using state does the same as clicking index 1 navigation button
-                    final CurvedNavigationBarState? navBarState =
-                        _bottomNavigationKey.currentState;
-                    navBarState?.setPage(1);
-                  },
-                )
-              ],
-            ),
-          ),
-        ));
+        color: Colors.deepOrangeAccent,
+        child: ListView.builder(
+          itemCount: documents.length,
+          itemBuilder: (context, index) {
+            return Container(
+              margin:
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+              padding: const EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ExpansionTile(
+                title: Text(documents[index]
+                    .title), // Assuming documents[index] has a title property
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(documents[index]
+                        .content), // Assuming documents[index] has a content property
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addNewDocument,
+        tooltip: 'Add Document',
+        child: Icon(Icons.add, color: Colors.white),
+      ),
+    );
   }
 }

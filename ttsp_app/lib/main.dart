@@ -73,7 +73,7 @@ class _MyHomePageState extends State<HomePage> {
         page = History(setPageCallback: setPage);
         break;
       case 2:
-        page = const Document();
+        page = const Documents();
         break;
     }
     return LayoutBuilder(builder: (context, constraints) {
