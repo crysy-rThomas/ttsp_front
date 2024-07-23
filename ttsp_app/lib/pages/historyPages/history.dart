@@ -2,12 +2,14 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:ttsp_app/models/conversation.dart';
 import 'package:ttsp_app/models/message.dart';
+import '../../main.dart';
 import '../../services/chat_service.dart';
 
 int? currentConversationId;
 GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey(); 
 class History extends StatefulWidget {
-  const History({super.key});
+  final Function(int) setPageCallback;
+  const History({super.key, required this.setPageCallback});
 
   @override
   State<History> createState() => _HistoryState();
@@ -65,7 +67,9 @@ class _HistoryState extends State<History> {
                               onTap: () {
                                 setState(() {
                                   currentConversationId = conversation.id;
+                                  pos = 0;
                                 });
+                                widget.setPageCallback(0);
                                 final CurvedNavigationBarState? navBarState =
                                     _bottomNavigationKey.currentState;
                                 navBarState?.setPage(0);

@@ -70,7 +70,7 @@ class _MyHomePageState extends State<HomePage> {
         page = const Chat();
         break;
       case 1:
-        page = const History();
+        page = History(setPageCallback: setPage);
         break;
       case 2:
         page = const Document();
@@ -98,9 +98,17 @@ class _MyHomePageState extends State<HomePage> {
       
     });
   }
+  void setPage(int index) {
+    setState(() {
+      pos = index;
+    });
+    _bottomNavigationKey.currentState?.setPage(index);
+  }
 }
 
+  
+  
   void navigateToPage(BuildContext context, String route) {
-    Navigator.pushNamed(context, route);
+      Navigator.pushNamed(context, route);
   }
 
