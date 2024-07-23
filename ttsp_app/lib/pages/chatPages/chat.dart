@@ -1,8 +1,8 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:ttsp_app/models/message.dart';
+import '../../services/chat_service.dart';
+import '../historyPages/history.dart';
 
-import '../../main.dart';
-GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -14,6 +14,14 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> with WidgetsBindingObserver {
   final List<String> _messages = [];
   final TextEditingController _controller = TextEditingController();
+  final ChatService _chat = ChatService();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadConversation();
+  }
 
   @override
   void dispose() {
@@ -21,12 +29,47 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
+  void _loadConversation() async {
+    if (currentConversationId != null) {
       setState(() {
-        _messages.add(_controller.text);
-        _controller.clear();
+        _isLoading = true;
+        _messages.clear();
       });
+
+      List<Message> messages = await _chat.getMessages(currentConversationId!);
+      setState(() {
+        _messages.addAll(messages.map((message) => message.content));
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _sendMessage() async {
+    if (_controller.text.isNotEmpty) {
+      final String messageText = _controller.text;
+      try {
+        if (_messages.isEmpty && currentConversationId == null) {
+          final conversation = await _chat.createConversation(messageText);
+          currentConversationId = conversation.id;
+        }
+        setState(() {
+          _messages.add(messageText);
+          _controller.clear();
+          _isLoading = true;
+        });
+
+        Message responseMessage = await _chat.sendMessage(messageText, currentConversationId!);
+
+        setState(() {
+          _messages.add(responseMessage.content);
+          _isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        print('Error sending message: $e');
+      }
     }
   }
 
@@ -76,9 +119,13 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.send),
+                    icon: _isLoading
+                        ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : const Icon(Icons.send),
                     color: Colors.white,
-                    onPressed: _sendMessage,
+                    onPressed: _isLoading ? null : _sendMessage,
                   ),
                 ],
               ),

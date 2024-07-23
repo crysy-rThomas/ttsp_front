@@ -2,8 +2,6 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
- final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey =
-      GlobalKey<CurvedNavigationBarState>();
 class Document extends StatefulWidget {
   const Document({super.key});
 
@@ -12,6 +10,7 @@ class Document extends StatefulWidget {
 }
 
 class _Document extends State<Document> {
+  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey<CurvedNavigationBarState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +32,6 @@ class _Document extends State<Document> {
               ],
             ),
           ),
-        ),
-    );
-        }
+        ));
+  }
 }

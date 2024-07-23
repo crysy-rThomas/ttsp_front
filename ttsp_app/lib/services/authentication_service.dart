@@ -51,6 +51,7 @@ class AuhtenticationService {
         // Assuming the response data is a token
         String accessToken = response.data['access_token'];
         String refreshToken = response.data['refresh_token'];
+        print(accessToken);
         storage.write(key: "access_token", value: accessToken);
         storage.write(key: "refresh_token", value: refreshToken);
         return accessToken;
