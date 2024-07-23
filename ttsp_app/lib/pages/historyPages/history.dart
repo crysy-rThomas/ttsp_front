@@ -84,9 +84,21 @@ class _HistoryState extends State<History> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Title : ${conversation.name.length > 20 ? conversation.name.substring(0, 10) : conversation.name}....',
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Title : ${conversation.name.length > 20 ? conversation.name.substring(0, 10) : conversation.name}....',
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        IconButton(
+                                        icon: Icon(Icons.delete, color: Colors.red),
+                                        onPressed: () {
+                                          _chatService.deleteConversation(conversation.id);
+                                          _conversations.removeWhere((conversationItem) => conversationItem.id == conversation.id);
+                                          _fetchConversations();
+                                        },
+                                      ),
+                                      ],
                                     ),
                                     const SizedBox(height: 5.0),
                                     Text('${msg.content.length > 100 ? msg.content.substring(0, 100) : msg.content}.....'),

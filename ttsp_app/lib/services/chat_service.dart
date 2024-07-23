@@ -67,6 +67,27 @@ class ChatService {
         'Failed to create conversation'); // Add a throw statement to handle the case when no conversation is created.
   }
 
+  Future<void> deleteConversation(int conversationId) async {
+    const FlutterSecureStorage storage = FlutterSecureStorage();
+    final String? accessToken = await storage.read(key: 'access_token');
+    try {
+      final response = await Dio().delete(
+        'http://127.0.0.1:8000/v0/conversation/$conversationId',
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $accessToken",
+          },
+        ),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to delete conversation');
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to delete conversation');
+    }
+  }
+
   Future<List<Conversation>> getConversations() async {
     const FlutterSecureStorage storage = FlutterSecureStorage();
     final String? accessToken = await storage.read(key: 'access_token');
