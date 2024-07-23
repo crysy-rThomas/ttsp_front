@@ -87,7 +87,7 @@ class _HistoryState extends State<History> {
                                     Row(
                                       children: [
                                         Text(
-                                          'Title : ${conversation.name.length > 20 ? conversation.name.substring(0, 10) : conversation.name}....',
+                                          'Titre : ${conversation.name.length > 50 ? conversation.name.substring(0, 10) : conversation.name}....',
                                           style: const TextStyle(fontWeight: FontWeight.bold),
                                         ),
                                         IconButton(

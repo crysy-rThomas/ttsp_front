@@ -138,7 +138,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
-                        hintText: 'Enter your message',
+                        hintText: 'Entrer votre message',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
